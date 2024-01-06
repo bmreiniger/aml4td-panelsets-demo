@@ -10,6 +10,8 @@ This chapter on the main website is a high-level tour of the modeling process. W
 
 ## Requirements
 
+::: {.panel-tabset group="language"}
+## R
 ```{r}
 #| label: whole-game-knitr-setup
 #| include: false
@@ -37,6 +39,12 @@ options(pillar.advice = FALSE, pillar.min_title_chars = Inf, pillar.sigfig = 4)
 source("../R/_common.R")
 req_pkg <- c("brulee", "Cubist", "patchwork", "scales", "splines2", "tidymodels")
 ```
+## Python
+```{python}
+pass
+```
+:::
+
 
 `r pkg_list(req_pkg)`
 
@@ -54,8 +62,11 @@ Two other packages are described but not directly used: `r pkg(parallel)` and `r
 
 Let's run some code to get started: 
 
+::: {.panel-tabset group="language"}
+## R
 ```{r}
 #| label: whole-game-load
+#| echo: true
 
 library(tidymodels)
 library(probably)
@@ -63,6 +74,15 @@ library(patchwork)
 
 tidymodels_prefer()
 ```
+## Python
+```{python}
+#| label: whole-game-load-py
+#| echo: true
+import sklearn
+import pandas as pd
+```
+:::
+
 
 Finally, this note:
 
@@ -80,17 +100,31 @@ If you start by opening the `Rproj` file, you will always start in the right pla
 
 The data set is pre-compiled into a binary format R uses (called "RData format" here). It is in the `RData` directory. A `csv` version is also in the `delimited` directory. Let's load it: 
 
+::: {.panel-tabset group="language"}
+## R
 ```{r}
 #| label: whole-game-get-data
 #| eval: false
 
 load("RData/deliveries.RData")
 ```
+## Python
+```{python}
+#| eval: false
+deliveries = pd.read_csv("csv/deliveries.csv")
+```
+:::
+
 ```{r}
 #| label: whole-game-now-really-get-data
 #| echo: false
 
 load("../RData/deliveries.RData")
+```
+```{python}
+#| echo: false
+
+deliveries = pd.read_csv("../csv/deliveries.csv")
 ```
 
 There are a lot of ways that you can examine the contents of an object. `View()` is good for data frames; in the RStudio IDE, it opens a spreadsheet-like viewer. `tibble::glimpse()` shows more details about the object, such as classes, but can be a bad choice if you have >50 columns in the data (or if it is a long list or similar). We'll use that: 
@@ -166,6 +200,8 @@ The code is below.
 
 We used a value of 991 to set the seed^[If you are wondering how we get the seed values, I use `sample.int(1000, 1)` to generate random seeds on the fly.]: 
 
+::: {.panel-tabset group="language"}
+## R
 ```{r}
 #| label: whole-game-split
 set.seed(991)
@@ -186,6 +222,14 @@ delivery_train <- training(delivery_split)
 delivery_test  <- testing(delivery_split)
 delivery_val   <- validation(delivery_split)
 ```
+## Python
+```{python}
+#| label: whole-game-split-py
+from sklearn.model_selection import train_test_split
+# delivery_train_val, delivery_test = train_test_split(deliveries, test_size=0.2, random_state=991)
+# delivery_train, delivery_val = train_test_split(delivery_train_val, test_size=0.2, random_state=991)
+```
+:::
 
 We will mostly work with the training set of `r format(nrow(delivery_train), big.mark = ",")` deliveries. We'll use that to explore the data, fit models, and so on. 
 
@@ -193,9 +237,13 @@ We will mostly work with the training set of `r format(nrow(delivery_train), big
 
 We mostly used `r pkg(ggplot2)` and `r pkg(patchwork)` to create these graphics: 
 
-
+::: {.panel-tabset group="language"}
+## R
 ```{r}
 #| label: delivery-predictors-code
+#| fig-width: 6
+#| fig-height: 6
+#| out-width: "80%"
 
 # Make specific colors for each day
 day_cols <-  c("#000000FF", "#24FF24FF", "#009292FF",  "#B66DFFFF", 
@@ -231,15 +279,6 @@ delivery_time_day <-
   # With `col = day`, the trends will be estimated separately for each value of 'day'.
   geom_smooth(se = FALSE) + 
   scale_color_manual(values = day_cols)
-```
-
-`r pkg(patchwork)` puts it together. 
-
-```{r}
-#| label: delivery-predictors
-#| fig-width: 6
-#| fig-height: 6
-#| out-width: "80%"
 
 # Row 1
 ( delivery_dist + delivery_time ) / 
@@ -250,6 +289,32 @@ delivery_time_day <-
   # Place the legend at the bottom
   theme(legend.title = element_blank(), legend.position = "bottom")
 ```
+## Python
+```{python}
+from matplotlib import pyplot as plt
+# delivery_train.plot.scatter(
+#   x='distance',
+#   y='time_to_delivery',
+#   alpha=0.1,
+# )
+# plt.show();
+
+# delivery_train['day'] = (
+#   delivery_train['day']
+#   .astype('category')
+#   .cat.set_categories(
+#     ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+#   )
+# )
+
+# delivery_train.boxplot(
+#   column='time_to_delivery',
+#   by='day',
+# );
+```
+:::
+
+`r pkg(patchwork)` puts it together. 
 
 `r pkg(ggplot2)` is a bit noisy. The messages tell you details about how it made the smooth trend line. The code `s(x, bs = "cs")` defines a _spline smoother_ that we will see more of shortly (using a different function). 
 
