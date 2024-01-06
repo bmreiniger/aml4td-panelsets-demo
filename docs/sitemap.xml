@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://tidymodels.aml4td.org/index.html</loc>
+    <lastmod>2024-01-06T23:23:14.056Z</lastmod>
+  </url>
+  <url>
+    <loc>https://tidymodels.aml4td.org/chapters/news.html</loc>
+    <lastmod>2024-01-06T23:23:14.088Z</lastmod>
+  </url>
+  <url>
+    <loc>https://tidymodels.aml4td.org/chapters/contributing.html</loc>
+    <lastmod>2024-01-06T23:23:14.119Z</lastmod>
+  </url>
+  <url>
+    <loc>https://tidymodels.aml4td.org/chapters/introduction.html</loc>
+    <lastmod>2024-01-06T23:23:14.160Z</lastmod>
+  </url>
+  <url>
+    <loc>https://tidymodels.aml4td.org/chapters/whole-game.html</loc>
+    <lastmod>2024-01-06T23:23:14.395Z</lastmod>
+  </url>
+  <url>
+    <loc>https://tidymodels.aml4td.org/chapters/initial-data-splitting.html</loc>
+    <lastmod>2024-01-06T23:23:14.427Z</lastmod>
+  </url>
+</urlset>

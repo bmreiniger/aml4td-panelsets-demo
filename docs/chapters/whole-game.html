@@ -1,0 +1,1625 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.450">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<title>Tidymodels Computing Supplement - 2&nbsp; The Whole Game</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../chapters/initial-data-splitting.html" rel="next">
+<link href="../chapters/introduction.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+</head>
+<body class="nav-sidebar docked">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav"><div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../chapters/whole-game.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">The Whole Game</span></a></li></ol></nav>
+      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+      </a>
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation docked overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../"></a> 
+        <div class="sidebar-tools-main tools-wide">
+    <a href="https://github.com/aml4td/computing-tidymodels/" rel="" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+    <div class="dropdown">
+      <a href="" title="Share" id="quarto-navigation-tool-dropdown-0" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Share"><i class="bi bi-share"></i></a>
+      <ul class="dropdown-menu" aria-labelledby="quarto-navigation-tool-dropdown-0">
+<li>
+            <a class="dropdown-item sidebar-tools-main-item" href="https://twitter.com/intent/tweet?url=%7Curl%7C">
+              <i class="bi bi-bi-twitter pe-1"></i>
+            Twitter
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="https://www.facebook.com/sharer/sharer.php?u=%7Curl%7C">
+              <i class="bi bi-bi-facebook pe-1"></i>
+            Facebook
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="https://www.linkedin.com/sharing/share-offsite/?url=%7Curl%7C">
+              <i class="bi bi-bi-linkedin pe-1"></i>
+            LinkedIn
+            </a>
+          </li>
+      </ul>
+</div>
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/news.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">News</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/contributing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Contributing</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/introduction.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/whole-game.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">The Whole Game</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text">Preparation</span></span>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/initial-data-splitting.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Initial Data Splitting</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text">Optmization</span></span>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text">Classification</span></span>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text">Regression</span></span>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text">Characterization</span></span>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text">Finalization</span></span>
+  </li>
+    </ul>
+</div>
+</nav><div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+<li><a href="#requirements" id="toc-requirements" class="nav-link active" data-scroll-target="#requirements"><span class="header-section-number">2.1</span> Requirements</a></li>
+  <li><a href="#the-data" id="toc-the-data" class="nav-link" data-scroll-target="#the-data"><span class="header-section-number">2.2</span> The Data</a></li>
+  <li><a href="#data-spending" id="toc-data-spending" class="nav-link" data-scroll-target="#data-spending"><span class="header-section-number">2.3</span> Data Spending</a></li>
+  <li><a href="#exploratory-data-analysis" id="toc-exploratory-data-analysis" class="nav-link" data-scroll-target="#exploratory-data-analysis"><span class="header-section-number">2.4</span> Exploratory Data Analysis</a></li>
+  <li>
+<a href="#model-development" id="toc-model-development" class="nav-link" data-scroll-target="#model-development"><span class="header-section-number">2.5</span> Model Development</a>
+  <ul class="collapse">
+<li><a href="#linear-regression" id="toc-linear-regression" class="nav-link" data-scroll-target="#linear-regression">Linear Regression</a></li>
+  <li><a href="#rule-based-ensemble" id="toc-rule-based-ensemble" class="nav-link" data-scroll-target="#rule-based-ensemble">Rule-Based Ensemble</a></li>
+  <li><a href="#neural-network" id="toc-neural-network" class="nav-link" data-scroll-target="#neural-network">Neural Network</a></li>
+  </ul>
+</li>
+  <li><a href="#aside-parallel-processing" id="toc-aside-parallel-processing" class="nav-link" data-scroll-target="#aside-parallel-processing"><span class="header-section-number">2.6</span> Aside: Parallel Processing</a></li>
+  <li><a href="#calibration" id="toc-calibration" class="nav-link" data-scroll-target="#calibration"><span class="header-section-number">2.7</span> Calibration</a></li>
+  <li><a href="#test-set-results" id="toc-test-set-results" class="nav-link" data-scroll-target="#test-set-results"><span class="header-section-number">2.8</span> Test Set Results</a></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion"><span class="header-section-number">2.9</span> Conclusion</a></li>
+  </ul></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
+<h1 class="title"><span id="sec-whole-game" class="quarto-section-identifier"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">The Whole Game</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header><p>This chapter on the main website is a high-level tour of the modeling process. We’ll follow the same pattern here by analyzing the same data. We won’t reproduce every figure or table but these notes will give you a broad understanding of how the tidymodels framework operates.</p>
+<section id="requirements" class="level2" data-number="2.1"><h2 data-number="2.1" class="anchored" data-anchor-id="requirements">
+<span class="header-section-number">2.1</span> Requirements</h2>
+<div class="tabset-margin-container"></div><div class="panel-tabset" data-group="language">
+<ul class="nav nav-tabs" role="tablist">
+<li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true">R</a></li>
+<li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false">Python</a></li>
+</ul>
+<div class="tab-content" data-group="language">
+<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
+
+</div>
+<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
+<div class="cell" data-hash="../_cache/whole-game/unnamed-chunk-2_575395df7a3c74c6051594207d189eac">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="cf">pass</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</div>
+</div>
+<p>You’ll need 6 packages (<span class="pkg"><a href="https://cran.r-project.org/package=brulee">brulee</a></span>, <span class="pkg"><a href="https://cran.r-project.org/package=Cubist">Cubist</a></span>, <span class="pkg"><a href="https://cran.r-project.org/package=patchwork">patchwork</a></span>, <span class="pkg"><a href="https://cran.r-project.org/package=scales">scales</a></span>, <span class="pkg"><a href="https://cran.r-project.org/package=splines2">splines2</a></span>, and <span class="pkg"><a href="https://cran.r-project.org/package=tidymodels">tidymodels</a></span>) for this chapter. You can install them via:</p>
+<div class="cell" data-hash="../_cache/whole-game/whole-game-installs_95bc69283f653160d8a3fc703f874f8d">
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">pak</span><span class="fu">::</span><span class="fu">pak</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"brulee"</span>, <span class="st">"Cubist"</span>, <span class="st">"patchwork"</span>, <span class="st">"scales"</span>, <span class="st">"splines2"</span>, <span class="st">"tidymodels"</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Once you’ve installed <span class="pkg"><a href="https://cran.r-project.org/package=brulee">brulee</a></span>, you should load it using <code><a href="https://github.com/tidymodels/brulee">library(brulee)</a></code> to install the underlying <code>torch</code> executables. You only have to do this once.</p>
+<p>Two other packages are described but not directly used: <span class="pkg"><a href="https://cran.r-project.org/package=parallel">parallel</a></span> and <span class="pkg"><a href="https://cran.r-project.org/package=doParallel">doParallel</a></span>.</p>
+<p>Let’s run some code to get started:</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset" data-group="language">
+<ul class="nav nav-tabs" role="tablist">
+<li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true">R</a></li>
+<li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false">Python</a></li>
+</ul>
+<div class="tab-content" data-group="language">
+<div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
+<div class="cell" data-hash="../_cache/whole-game/whole-game-load_4e3b8664028ce7b800557186d2290837">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidymodels.tidymodels.org">tidymodels</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/tidymodels/probably/">probably</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://patchwork.data-imaginist.com">patchwork</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://tidymodels.tidymodels.org/reference/tidymodels_prefer.html">tidymodels_prefer</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-2-tab">
+<div class="cell" data-hash="../_cache/whole-game/whole-game-load-py_adc9c6fc67284281b86f82e074091d5a">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> sklearn</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</div>
+</div>
+<p>Finally, this note:</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>All of these notes will assume that you have an R session that is running from the root of the directory containing the GitHub repository files. In other words, if you were to execute <code>list.dirs(recursive = FALSE)</code>, the output would show entries such as <code>"./chapters"</code>, <code>"./RData"</code>, etc.</p>
+<p>If you are not in the right place, use <code><a href="https://rdrr.io/r/base/getwd.html">setwd()</a></code> to change the working directory to the correct location.</p>
+<p>If you start by opening the <code>Rproj</code> file, you will always start in the right place.</p>
+</div>
+</div>
+</section><section id="the-data" class="level2" data-number="2.2"><h2 data-number="2.2" class="anchored" data-anchor-id="the-data">
+<span class="header-section-number">2.2</span> The Data</h2>
+<p>The data set is pre-compiled into a binary format R uses (called “RData format” here). It is in the <code>RData</code> directory. A <code>csv</code> version is also in the <code>delimited</code> directory. Let’s load it:</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset" data-group="language">
+<ul class="nav nav-tabs" role="tablist">
+<li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-3-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-1" role="tab" aria-controls="tabset-3-1" aria-selected="true">R</a></li>
+<li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-2" role="tab" aria-controls="tabset-3-2" aria-selected="false">Python</a></li>
+</ul>
+<div class="tab-content" data-group="language">
+<div id="tabset-3-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-3-1-tab">
+<div class="cell" data-hash="../_cache/whole-game/whole-game-get-data_e2c2237fba49c71e56db6683265b8067">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/load.html">load</a></span><span class="op">(</span><span class="st">"RData/deliveries.RData"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<div id="tabset-3-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-2-tab">
+<div class="cell" data-hash="../_cache/whole-game/unnamed-chunk-7_5bc85323e7b092d7302eb4738a82bf68">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>deliveries <span class="op">=</span> pd.read_csv(<span class="st">"csv/deliveries.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</div>
+</div>
+<p>There are a lot of ways that you can examine the contents of an object. <code><a href="https://rdrr.io/r/utils/View.html">View()</a></code> is good for data frames; in the RStudio IDE, it opens a spreadsheet-like viewer. <code><a href="https://pillar.r-lib.org/reference/glimpse.html">tibble::glimpse()</a></code> shows more details about the object, such as classes, but can be a bad choice if you have &gt;50 columns in the data (or if it is a long list or similar). We’ll use that:</p>
+<div class="cell" data-hash="../_cache/whole-game/whole-game-str_8b43ef78cbb4ed90f1e6c4b0a8e97bf1">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">glimpse</span><span class="op">(</span><span class="va">deliveries</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 10,012
+Columns: 31
+$ time_to_delivery &lt;dbl&gt; 16.1106, 22.9466, 30.2882, 33.4266, 27.2255, 19.6459,…
+$ hour             &lt;dbl&gt; 11.899, 19.230, 18.374, 15.836, 19.619, 12.952, 15.47…
+$ day              &lt;fct&gt; Thu, Tue, Fri, Thu, Fri, Sat, Sun, Thu, Fri, Sun, Tue…
+$ distance         &lt;dbl&gt; 3.15, 3.69, 2.06, 5.97, 2.52, 3.35, 2.46, 2.21, 2.62,…
+$ item_01          &lt;int&gt; 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0,…
+$ item_02          &lt;int&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 1, 0, 0, 0, 1,…
+$ item_03          &lt;int&gt; 2, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0,…
+$ item_04          &lt;int&gt; 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0,…
+$ item_05          &lt;int&gt; 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,…
+$ item_06          &lt;int&gt; 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0,…
+$ item_07          &lt;int&gt; 0, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0,…
+$ item_08          &lt;int&gt; 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0,…
+$ item_09          &lt;int&gt; 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0,…
+$ item_10          &lt;int&gt; 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0,…
+$ item_11          &lt;int&gt; 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,…
+$ item_12          &lt;int&gt; 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,…
+$ item_13          &lt;int&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,…
+$ item_14          &lt;int&gt; 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,…
+$ item_15          &lt;int&gt; 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0,…
+$ item_16          &lt;int&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,…
+$ item_17          &lt;int&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,…
+$ item_18          &lt;int&gt; 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 1, 0,…
+$ item_19          &lt;int&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,…
+$ item_20          &lt;int&gt; 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,…
+$ item_21          &lt;int&gt; 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,…
+$ item_22          &lt;int&gt; 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0,…
+$ item_23          &lt;int&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,…
+$ item_24          &lt;int&gt; 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,…
+$ item_25          &lt;int&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1,…
+$ item_26          &lt;int&gt; 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0,…
+$ item_27          &lt;int&gt; 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0,…</code></pre>
+</div>
+</div>
+<p>We can see that this is a data frame and, more specifically a specialized version called a <a href="https://tibble.tidyverse.org">tibble</a>. There are 10,012 data points and 31 columns and their types.</p>
+<p>Note that the <code>day</code> column is a <a href="https://r4ds.hadley.nz/factors"><em>factor</em></a>. This is the preferred way to represent most categorical data (for modeling, at least). A factor catalogs the possible values of the data and stores those <em>levels</em>. That is important when we convert categorical predictors to “dummy variables” or “indicators” and similar operations.</p>
+<p>In some cases, storing categorical data as integers might seem like a good idea (especially 0/1 for binary data). Do your best <em>to avoid that</em>. R (and tidymodels) would instead you use a data type that is designed explicitly for categories (a factor); it knows what to do with factors. If an integer is used, R can’t distinguish this from a column of counts (such as the number of times that <code>item_01</code> was included in the order).</p>
+<p>To create the histograms of the delivery times, we used this code to create each:</p>
+<div class="cell" data-hash="../_cache/whole-game/whole-game-hist-1_83d5eee7de00ed3ca3ab9f57279de555">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Setup some fancy code for the axes: </span></span>
+<span><span class="va">log_2_breaks</span> <span class="op">&lt;-</span> <span class="fu">scales</span><span class="fu">::</span><span class="fu"><a href="https://scales.r-lib.org/reference/trans_breaks.html">trans_breaks</a></span><span class="op">(</span><span class="st">"log2"</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fl">2</span><span class="op">^</span><span class="va">x</span><span class="op">)</span></span>
+<span><span class="va">log_2_labs</span>   <span class="op">&lt;-</span> <span class="fu">scales</span><span class="fu">::</span><span class="fu"><a href="https://scales.r-lib.org/reference/trans_format.html">trans_format</a></span><span class="op">(</span><span class="st">"log2"</span>, <span class="fu">scales</span><span class="fu">::</span><span class="fu"><a href="https://scales.r-lib.org/reference/parse_format.html">math_format</a></span><span class="op">(</span><span class="fl">2</span><span class="op">^</span><span class="va">.x</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">delivery_hist</span> <span class="op">&lt;-</span> </span>
+<span>  <span class="va">deliveries</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">time_to_delivery</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_histogram</span><span class="op">(</span>bins <span class="op">=</span> <span class="fl">30</span>, col <span class="op">=</span> <span class="st">"white"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_rug</span><span class="op">(</span>alpha <span class="op">=</span> <span class="fl">1</span> <span class="op">/</span> <span class="fl">4</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">labs</span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Time Until Delivery (min)"</span>, title <span class="op">=</span> <span class="st">"(a)"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">delivery_log_hist</span> <span class="op">&lt;-</span> </span>
+<span>  <span class="va">deliveries</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">time_to_delivery</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_histogram</span><span class="op">(</span>bins <span class="op">=</span> <span class="fl">30</span>, col <span class="op">=</span> <span class="st">"white"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_rug</span><span class="op">(</span>alpha <span class="op">=</span> <span class="fl">1</span> <span class="op">/</span> <span class="fl">4</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">labs</span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Time Until Delivery (min)"</span>, title <span class="op">=</span> <span class="st">"(b)"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">scale_x_log10</span><span class="op">(</span>breaks <span class="op">=</span> <span class="va">log_2_breaks</span>, labels <span class="op">=</span> <span class="va">log_2_labs</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>You don’t need to assign the plots to objects; you can just print each. We did this so that we can concatenate the two plots with the <span class="pkg"><a href="https://cran.r-project.org/package=patchwork">patchwork</a></span> package<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>:</p>
+<div class="cell" data-hash="../_cache/whole-game/whole-game-hists_b3891bdd417983373f719d37a6c57819">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">delivery_hist</span> <span class="op">+</span> <span class="va">delivery_log_hist</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="whole-game_files/figure-html/whole-game-hists-1.png" class="img-fluid" width="576"></p>
+</div>
+</div>
+<p>In the code above, we use an option called <code>"alpha"</code>. This is jargon for transparency; a value of <code>1/4</code> means that the points in the rug are 25% opaque.</p>
+</section><section id="data-spending" class="level2" data-number="2.3"><h2 data-number="2.3" class="anchored" data-anchor-id="data-spending">
+<span class="header-section-number">2.3</span> Data Spending</h2>
+<p>tidymodels has a variety of ways to split the data at the outset of your modeling project. We will create a three-way split of the data using a function called <code>initial_validation_split()</code>.</p>
+<p>It uses random numbers so we will set the random number seed before using it.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+What’s a random number seed?
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>We are using random numbers (actually <a href="https://en.wikipedia.org/wiki/Pseudorandomness">pseudo-random numbers</a>). We want to get the same “random” values every time we run the same code for reproducibility. To do that, we use the <code><a href="https://rdrr.io/r/base/Random.html">set.seed()</a></code> function and give it an integer value. The value itself doesn’t matter.</p>
+<p>The random number stream is like a river. If you want to see the same things in your journey down the river, you must get in at the same exact spot. The seed is like the location where you start a journey (that is always the same).</p>
+</div>
+</div>
+<p>The code is below.</p>
+<ul>
+<li><p>The <code>prop</code> argument shows the fraction of the original data that should go into the training set (60%) and the validation set (20%). The remaining 20% are put in the test set.</p></li>
+<li><p>The <code>strata</code> argument specifies that the splitting should consider the outcome column (<code>time_to_delivery</code>). This will be discussed in a future section. In short, the three-way splitting is done in different regions of the outcome data in a way that makes the distribution of the outcome as similar as possible across the three partitions.</p></li>
+</ul>
+<p>We used a value of 991 to set the seed<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>:</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset" data-group="language">
+<ul class="nav nav-tabs" role="tablist">
+<li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-4-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-1" role="tab" aria-controls="tabset-4-1" aria-selected="true">R</a></li>
+<li class="nav-item" role="presentation"><a class="nav-link" id="tabset-4-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-2" role="tab" aria-controls="tabset-4-2" aria-selected="false">Python</a></li>
+</ul>
+<div class="tab-content" data-group="language">
+<div id="tabset-4-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-4-1-tab">
+<div class="cell" data-hash="../_cache/whole-game/whole-game-split_ace5624456bb9da2571014ec1da402b7">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">991</span><span class="op">)</span></span>
+<span><span class="va">delivery_split</span> <span class="op">&lt;-</span></span>
+<span>  <span class="fu">initial_validation_split</span><span class="op">(</span><span class="va">deliveries</span>, prop <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.6</span>, <span class="fl">0.2</span><span class="op">)</span>, strata <span class="op">=</span> <span class="va">time_to_delivery</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># What is in it? </span></span>
+<span><span class="va">delivery_split</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>&lt;Training/Validation/Testing/Total&gt;
+&lt;6004/2004/2004/10012&gt;</code></pre>
+</div>
+</div>
+<p>This object records which rows of the original data go into the training, validation, or test sets. The printed output shows the totals for each as <code>&lt;train/val/test/total&gt;</code>.</p>
+<p>To get the data frames with the correct rows, use these three eponymous functions:</p>
+<div class="cell" data-hash="../_cache/whole-game/whole-game-split-data_7db8e1b1b7921edc04e384f1ff6cdb2c">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">delivery_train</span> <span class="op">&lt;-</span> <span class="fu">training</span><span class="op">(</span><span class="va">delivery_split</span><span class="op">)</span></span>
+<span><span class="va">delivery_test</span>  <span class="op">&lt;-</span> <span class="fu">testing</span><span class="op">(</span><span class="va">delivery_split</span><span class="op">)</span></span>
+<span><span class="va">delivery_val</span>   <span class="op">&lt;-</span> <span class="fu">validation</span><span class="op">(</span><span class="va">delivery_split</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<div id="tabset-4-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-4-2-tab">
+<div class="cell" data-hash="../_cache/whole-game/whole-game-split-py_74a4c97625eb2b26db51e88d395f9e82">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> train_test_split</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="co"># delivery_train_val, delivery_test = train_test_split(deliveries, test_size=0.2, random_state=991)</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="co"># delivery_train, delivery_val = train_test_split(delivery_train_val, test_size=0.2, random_state=991)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</div>
+</div>
+<p>We will mostly work with the training set of 6,004 deliveries. We’ll use that to explore the data, fit models, and so on.</p>
+</section><section id="exploratory-data-analysis" class="level2" data-number="2.4"><h2 data-number="2.4" class="anchored" data-anchor-id="exploratory-data-analysis">
+<span class="header-section-number">2.4</span> Exploratory Data Analysis</h2>
+<p>We mostly used <span class="pkg"><a href="https://cran.r-project.org/package=ggplot2">ggplot2</a></span> and <span class="pkg"><a href="https://cran.r-project.org/package=patchwork">patchwork</a></span> to create these graphics:</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset" data-group="language">
+<ul class="nav nav-tabs" role="tablist">
+<li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-5-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-1" role="tab" aria-controls="tabset-5-1" aria-selected="true">R</a></li>
+<li class="nav-item" role="presentation"><a class="nav-link" id="tabset-5-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-2" role="tab" aria-controls="tabset-5-2" aria-selected="false">Python</a></li>
+</ul>
+<div class="tab-content" data-group="language">
+<div id="tabset-5-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-5-1-tab">
+<div class="cell" data-hash="../_cache/whole-game/delivery-predictors-code_6cb3158a621a5138e5d594e60ab30cbb">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Make specific colors for each day</span></span>
+<span><span class="va">day_cols</span> <span class="op">&lt;-</span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"#000000FF"</span>, <span class="st">"#24FF24FF"</span>, <span class="st">"#009292FF"</span>,  <span class="st">"#B66DFFFF"</span>, </span>
+<span>               <span class="st">"#6DB6FFFF"</span>, <span class="st">"#920000FF"</span>, <span class="st">"#FFB6DBFF"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">delivery_dist</span> <span class="op">&lt;-</span> </span>
+<span>  <span class="va">delivery_train</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">distance</span>, <span class="va">time_to_delivery</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_point</span><span class="op">(</span>alpha <span class="op">=</span> <span class="fl">1</span> <span class="op">/</span> <span class="fl">10</span>, cex <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">labs</span><span class="op">(</span>y <span class="op">=</span> <span class="st">"Time Until Delivery (min)"</span>, x <span class="op">=</span> <span class="st">"Distance (miles)"</span>, title <span class="op">=</span> <span class="st">"(a)"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="co"># This function creates the smooth trend line. The `se` option shuts off the</span></span>
+<span>  <span class="co"># confidence band around the line; too much information to put into one plot. </span></span>
+<span>  <span class="fu">geom_smooth</span><span class="op">(</span>se <span class="op">=</span> <span class="cn">FALSE</span>, col <span class="op">=</span> <span class="st">"red"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">delivery_day</span> <span class="op">&lt;-</span> </span>
+<span>  <span class="va">delivery_train</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">day</span>, <span class="va">time_to_delivery</span>, col <span class="op">=</span> <span class="va">day</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_boxplot</span><span class="op">(</span>show.legend <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>  <span class="op">+</span></span>
+<span>  <span class="fu">labs</span><span class="op">(</span>y <span class="op">=</span> <span class="st">"Time Until Delivery (min)"</span>, x <span class="op">=</span> <span class="cn">NULL</span>, title <span class="op">=</span> <span class="st">"(c)"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">scale_color_manual</span><span class="op">(</span>values <span class="op">=</span> <span class="va">day_cols</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">delivery_time</span> <span class="op">&lt;-</span> </span>
+<span>  <span class="va">delivery_train</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">hour</span>, <span class="va">time_to_delivery</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">labs</span><span class="op">(</span>y <span class="op">=</span> <span class="st">"Time Until Delivery (min)"</span>, x <span class="op">=</span> <span class="st">"Order Time (decimal hours)"</span>, title <span class="op">=</span> <span class="st">"(b)"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_point</span><span class="op">(</span>alpha <span class="op">=</span> <span class="fl">1</span> <span class="op">/</span> <span class="fl">10</span>, cex <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>  <span class="fu">geom_smooth</span><span class="op">(</span>se <span class="op">=</span> <span class="cn">FALSE</span>, col <span class="op">=</span> <span class="st">"red"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">delivery_time_day</span> <span class="op">&lt;-</span> </span>
+<span>  <span class="va">delivery_train</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">hour</span>, <span class="va">time_to_delivery</span>, col <span class="op">=</span> <span class="va">day</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">labs</span><span class="op">(</span>y <span class="op">=</span> <span class="st">"Time Until Delivery (min)"</span>, x <span class="op">=</span> <span class="st">"Order Time (decimal hours)"</span>, title <span class="op">=</span> <span class="st">"(d)"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="co"># With `col = day`, the trends will be estimated separately for each value of 'day'.</span></span>
+<span>  <span class="fu">geom_smooth</span><span class="op">(</span>se <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>  <span class="fu">scale_color_manual</span><span class="op">(</span>values <span class="op">=</span> <span class="va">day_cols</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Row 1</span></span>
+<span><span class="op">(</span> <span class="va">delivery_dist</span> <span class="op">+</span> <span class="va">delivery_time</span> <span class="op">)</span> <span class="op">/</span> </span>
+<span>  <span class="co"># Row 2</span></span>
+<span>  <span class="op">(</span> <span class="va">delivery_day</span> <span class="op">+</span> <span class="va">delivery_time_day</span> <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="co"># Consolidate the legends</span></span>
+<span>  <span class="fu"><a href="https://patchwork.data-imaginist.com/reference/plot_layout.html">plot_layout</a></span><span class="op">(</span>guides <span class="op">=</span> <span class="st">'collect'</span><span class="op">)</span>  <span class="op">&amp;</span> </span>
+<span>  <span class="co"># Place the legend at the bottom</span></span>
+<span>  <span class="fu">theme</span><span class="op">(</span>legend.title <span class="op">=</span> <span class="fu">element_blank</span><span class="op">(</span><span class="op">)</span>, legend.position <span class="op">=</span> <span class="st">"bottom"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>`geom_smooth()` using method = 'gam' and formula = 'y ~ s(x, bs = "cs")'
+`geom_smooth()` using method = 'gam' and formula = 'y ~ s(x, bs = "cs")'
+`geom_smooth()` using method = 'gam' and formula = 'y ~ s(x, bs = "cs")'</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="whole-game_files/figure-html/delivery-predictors-code-1.png" class="img-fluid" style="width:80.0%"></p>
+</div>
+</div>
+</div>
+<div id="tabset-5-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-5-2-tab">
+<div class="cell" data-hash="../_cache/whole-game/unnamed-chunk-17_52e6843123e2d2b5a35ec9e164ed3ce5">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> matplotlib <span class="im">import</span> pyplot <span class="im">as</span> plt</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="co"># delivery_train.plot.scatter(</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="co">#   x='distance',</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="co">#   y='time_to_delivery',</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="co">#   alpha=0.1,</span></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a><span class="co"># )</span></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="co"># plt.show();</span></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a><span class="co"># delivery_train['day'] = (</span></span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a><span class="co">#   delivery_train['day']</span></span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a><span class="co">#   .astype('category')</span></span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a><span class="co">#   .cat.set_categories(</span></span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a><span class="co">#     ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']</span></span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a><span class="co">#   )</span></span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a><span class="co"># )</span></span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a><span class="co"># delivery_train.boxplot(</span></span>
+<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a><span class="co">#   column='time_to_delivery',</span></span>
+<span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a><span class="co">#   by='day',</span></span>
+<span id="cb17-20"><a href="#cb17-20" aria-hidden="true" tabindex="-1"></a><span class="co"># );</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</div>
+</div>
+<p><span class="pkg"><a href="https://cran.r-project.org/package=patchwork">patchwork</a></span> puts it together.</p>
+<p><span class="pkg"><a href="https://cran.r-project.org/package=ggplot2">ggplot2</a></span> is a bit noisy. The messages tell you details about how it made the smooth trend line. The code <code>s(x, bs = "cs")</code> defines a <em>spline smoother</em> that we will see more of shortly (using a different function).</p>
+<p>The methods that we used to compute the effects of the <code>item_*</code> columns are more complicated. We must make probabilistic assumptions about the data if we want to get something like a confidence interval. Alternatively, we could specify the empirical distribution function via the bootstrap resampling method. This helps us estimate the standard error of some statistic and use that to compute an interval.</p>
+<p>First, we make a function that takes some data and <a href="https://rsample.tidymodels.org/reference/int_pctl.html#arguments">computes our statistics of interest</a>. It assumes <code>x</code> is the entire data set with the delivery time column and each item column.</p>
+<div class="cell" data-hash="../_cache/whole-game/delivery-time-ratios_28db61a5a4f00f439b2e8d1b14af75a2">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">time_ratios</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">x</span> <span class="op">%&gt;%</span></span>
+<span>    <span class="co"># The items are in columns; we'll stack these columns on one another.</span></span>
+<span>    <span class="fu">pivot_longer</span><span class="op">(</span></span>
+<span>      cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fu">starts_with</span><span class="op">(</span><span class="st">"item"</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>      names_to <span class="op">=</span> <span class="st">"predictor"</span>,</span>
+<span>      values_to <span class="op">=</span> <span class="st">"count"</span></span>
+<span>    <span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>    <span class="co"># Collapse the counts into a "in order"/"not in order" variable. </span></span>
+<span>    <span class="fu">mutate</span><span class="op">(</span>ordered <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="va">count</span> <span class="op">&gt;</span> <span class="fl">0</span>, <span class="st">"yes"</span>, <span class="st">"no"</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>    <span class="co"># Compute, for each value of the 'predictor' and 'ordered' columns, </span></span>
+<span>    <span class="co"># the mean delivery time. </span></span>
+<span>    <span class="fu">summarize</span><span class="op">(</span>mean <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">time_to_delivery</span><span class="op">)</span>,</span>
+<span>              .by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">predictor</span>, <span class="va">ordered</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>    <span class="co"># Move the means to columns for when they were in the order </span></span>
+<span>    <span class="co"># and when they were not. The new column names are `yes` and `no`.</span></span>
+<span>    <span class="fu">pivot_wider</span><span class="op">(</span>id_cols <span class="op">=</span> <span class="va">predictor</span>,</span>
+<span>                names_from <span class="op">=</span> <span class="va">ordered</span>,</span>
+<span>                values_from <span class="op">=</span> <span class="va">mean</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>    <span class="co"># Compute the ratio. This is a fold-difference in delivery times.</span></span>
+<span>    <span class="fu">mutate</span><span class="op">(</span>ratio <span class="op">=</span> <span class="va">yes</span> <span class="op">/</span> <span class="va">no</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>    <span class="fu">select</span><span class="op">(</span>term <span class="op">=</span> <span class="va">predictor</span>, estimate <span class="op">=</span> <span class="va">ratio</span><span class="op">)</span></span>
+<span><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>When run in the training set:</p>
+<div class="cell" data-hash="../_cache/whole-game/delivery-time-ratio-train_f189420118809c583d281e0bacd018ac">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">time_ratios</span><span class="op">(</span><span class="va">delivery_train</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 27 × 2
+   term    estimate
+   &lt;chr&gt;      &lt;dbl&gt;
+ 1 item_01     1.07
+ 2 item_02     1.01
+ 3 item_03     1.01
+ 4 item_04     1.00
+ 5 item_05     1.00
+ 6 item_06     1.02
+ 7 item_07     1.02
+ 8 item_08     1.01
+ 9 item_09     1.02
+10 item_10     1.08
+# ℹ 17 more rows</code></pre>
+</div>
+</div>
+<p>A value of 1.07 means that there is a 7% increase in the delivery time when that item is in the order at least once.</p>
+<p>A tidymodels function called <code>int_pctl()</code> can take a collection of bootstrap samples of a data set, compute their statistics, and use the results to produce confidence intervals (we’ll use 90% intervals). To use it, we’ll resample the training set using the <code>bootstraps()</code> function and then use a <code>mutate()</code> to compute the fold differences.</p>
+<p>We are using random numbers again, so let’s reset the seed<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>.</p>
+<div class="cell" data-hash="../_cache/whole-game/delivery-bootstraps_bceb20095f0fbaf11934a42bc504cec1">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">624</span><span class="op">)</span></span>
+<span><span class="va">resampled_data</span> <span class="op">&lt;-</span> </span>
+<span>  <span class="va">delivery_train</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">select</span><span class="op">(</span><span class="va">time_to_delivery</span>, <span class="fu">starts_with</span><span class="op">(</span><span class="st">"item"</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="co"># This takes a while to compute. The materials use 5000 bootstraps</span></span>
+<span>  <span class="co"># but a smaller number is used here for demonstration.</span></span>
+<span>  <span class="fu">bootstraps</span><span class="op">(</span>times <span class="op">=</span> <span class="fl">1001</span><span class="op">)</span> </span>
+<span></span>
+<span><span class="va">resampled_data</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># Bootstrap sampling 
+# A tibble: 1,001 × 2
+   splits              id           
+   &lt;list&gt;              &lt;chr&gt;        
+ 1 &lt;split [6004/2227]&gt; Bootstrap0001
+ 2 &lt;split [6004/2197]&gt; Bootstrap0002
+ 3 &lt;split [6004/2156]&gt; Bootstrap0003
+ 4 &lt;split [6004/2210]&gt; Bootstrap0004
+ 5 &lt;split [6004/2208]&gt; Bootstrap0005
+ 6 &lt;split [6004/2227]&gt; Bootstrap0006
+ 7 &lt;split [6004/2202]&gt; Bootstrap0007
+ 8 &lt;split [6004/2204]&gt; Bootstrap0008
+ 9 &lt;split [6004/2151]&gt; Bootstrap0009
+10 &lt;split [6004/2229]&gt; Bootstrap0010
+# ℹ 991 more rows</code></pre>
+</div>
+</div>
+<p>The <code>splits</code> column contains the information on each bootstrap sample. To get a specific bootstrap sample, we can use the <code>analysis(split_object)</code> function on each element of the <code>splits</code> column. <code><a href="https://purrr.tidyverse.org/reference/map.html">purrr::map()</a></code> takes each split, extracts the bootstrap sample, then computes all of the ratios<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>.</p>
+<div class="cell" data-hash="../_cache/whole-game/delivery-bootstrap-ratios_8238fe352bb7302a6ca131bc6d735bf5">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">resampled_ratios</span> <span class="op">&lt;-</span> </span>
+<span>  <span class="va">resampled_data</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">mutate</span><span class="op">(</span>stats <span class="op">=</span> <span class="fu">map</span><span class="op">(</span><span class="va">splits</span>, <span class="op">~</span> <span class="fu">time_ratios</span><span class="op">(</span><span class="fu">analysis</span><span class="op">(</span><span class="va">.x</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">resampled_ratios</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># Bootstrap sampling 
+# A tibble: 1,001 × 3
+   splits              id            stats            
+   &lt;list&gt;              &lt;chr&gt;         &lt;list&gt;           
+ 1 &lt;split [6004/2227]&gt; Bootstrap0001 &lt;tibble [27 × 2]&gt;
+ 2 &lt;split [6004/2197]&gt; Bootstrap0002 &lt;tibble [27 × 2]&gt;
+ 3 &lt;split [6004/2156]&gt; Bootstrap0003 &lt;tibble [27 × 2]&gt;
+ 4 &lt;split [6004/2210]&gt; Bootstrap0004 &lt;tibble [27 × 2]&gt;
+ 5 &lt;split [6004/2208]&gt; Bootstrap0005 &lt;tibble [27 × 2]&gt;
+ 6 &lt;split [6004/2227]&gt; Bootstrap0006 &lt;tibble [27 × 2]&gt;
+ 7 &lt;split [6004/2202]&gt; Bootstrap0007 &lt;tibble [27 × 2]&gt;
+ 8 &lt;split [6004/2204]&gt; Bootstrap0008 &lt;tibble [27 × 2]&gt;
+ 9 &lt;split [6004/2151]&gt; Bootstrap0009 &lt;tibble [27 × 2]&gt;
+10 &lt;split [6004/2229]&gt; Bootstrap0010 &lt;tibble [27 × 2]&gt;
+# ℹ 991 more rows</code></pre>
+</div>
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># An example: </span></span>
+<span><span class="va">resampled_ratios</span><span class="op">$</span><span class="va">stats</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 27 × 2
+   term    estimate
+   &lt;chr&gt;      &lt;dbl&gt;
+ 1 item_01     1.07
+ 2 item_02     1.02
+ 3 item_03     1.01
+ 4 item_04     1.01
+ 5 item_05     1.02
+ 6 item_06     1.01
+ 7 item_07     1.03
+ 8 item_08     1.02
+ 9 item_09     1.03
+10 item_10     1.08
+# ℹ 17 more rows</code></pre>
+</div>
+</div>
+<p><code><a href="https://rsample.tidymodels.org/reference/int_pctl.html">rsample::int_pctl()</a></code> can consume these results and produce an interval for each item column<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a>.</p>
+<div class="cell" data-hash="../_cache/whole-game/delivery-bootstrap-intervals_588771bd555d3dc6d8477f3c470aa37a">
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">resampled_intervals</span> <span class="op">&lt;-</span> </span>
+<span>  <span class="va">resampled_ratios</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">int_pctl</span><span class="op">(</span><span class="va">stats</span>, alpha <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span> </span>
+<span></span>
+<span><span class="va">resampled_intervals</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 27 × 6
+   term    .lower .estimate .upper .alpha .method   
+   &lt;chr&gt;    &lt;dbl&gt;     &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt; &lt;chr&gt;     
+ 1 item_01  1.05       1.07   1.10    0.1 percentile
+ 2 item_02  0.995      1.01   1.02    0.1 percentile
+ 3 item_03  0.994      1.01   1.02    0.1 percentile
+ 4 item_04  0.988      1.00   1.02    0.1 percentile
+ 5 item_05  0.988      1.00   1.02    0.1 percentile
+ 6 item_06  1.00       1.02   1.03    0.1 percentile
+ 7 item_07  1.01       1.02   1.04    0.1 percentile
+ 8 item_08  0.994      1.01   1.02    0.1 percentile
+ 9 item_09  1.00       1.02   1.03    0.1 percentile
+10 item_10  1.06       1.08   1.10    0.1 percentile
+# ℹ 17 more rows</code></pre>
+</div>
+</div>
+<p>Here’s our plot:</p>
+<div class="cell" data-hash="../_cache/whole-game/time-ratio-plot_9642237e8b5449804a0a1da1e4bfbbf7">
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">resampled_intervals</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="co"># Convert the folds to percentages and make the item values</span></span>
+<span>  <span class="co"># a little cleaner:</span></span>
+<span>  <span class="fu">mutate</span><span class="op">(</span></span>
+<span>    term <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html">gsub</a></span><span class="op">(</span><span class="st">"_0"</span>, <span class="st">" "</span>, <span class="va">term</span><span class="op">)</span>,</span>
+<span>    term <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html">gsub</a></span><span class="op">(</span><span class="st">"_"</span>, <span class="st">" "</span>, <span class="va">term</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>    term <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/reorder.factor.html">reorder</a></span><span class="op">(</span><span class="va">term</span>, <span class="va">.estimate</span><span class="op">)</span>,</span>
+<span>    increase <span class="op">=</span> <span class="va">.estimate</span> <span class="op">-</span> <span class="fl">1</span>,</span>
+<span>  <span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span><span class="va">increase</span>, <span class="va">term</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>  <span class="fu">geom_vline</span><span class="op">(</span>xintercept <span class="op">=</span> <span class="fl">0</span>, col <span class="op">=</span> <span class="st">"red"</span>, alpha <span class="op">=</span> <span class="fl">1</span> <span class="op">/</span> <span class="fl">3</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_point</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>  <span class="fu">geom_errorbar</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>xmin <span class="op">=</span> <span class="va">.lower</span> <span class="op">-</span> <span class="fl">1</span>, xmax <span class="op">=</span> <span class="va">.upper</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span>, width <span class="op">=</span> <span class="fl">1</span> <span class="op">/</span> <span class="fl">2</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">scale_x_continuous</span><span class="op">(</span>labels <span class="op">=</span> <span class="fu">scales</span><span class="fu">::</span><span class="va"><a href="https://scales.r-lib.org/reference/percent_format.html">percent</a></span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">labs</span><span class="op">(</span>y <span class="op">=</span> <span class="cn">NULL</span>, x <span class="op">=</span> <span class="st">"Increase in Delivery Time When Ordered"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">theme</span><span class="op">(</span>axis.text.y <span class="op">=</span> <span class="fu">element_text</span><span class="op">(</span>hjust <span class="op">=</span> <span class="fl">0</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="whole-game_files/figure-html/time-ratio-plot-1.png" class="img-fluid" style="width:50.0%"></p>
+</div>
+</div>
+</section><section id="model-development" class="level2" data-number="2.5"><h2 data-number="2.5" class="anchored" data-anchor-id="model-development">
+<span class="header-section-number">2.5</span> Model Development</h2>
+<p>The analyses in this section define a model pipeline, fit it to the training set, and then measure performance using the validation set. We’ll review the three evaluated models and describe how those computations were done.</p>
+<p>Before we get started, we need to specify how to measure model effectiveness. The materials use the mean absolute error (MAE). To specify this <em>performance metric</em>, you can use the <code><a href="https://yardstick.tidymodels.org/reference/metric_set.html">yardstick::metric_set()</a></code> function and give it the function names for specific metrics (like the <code><a href="https://yardstick.tidymodels.org/reference/mae.html">yardstick::mae()</a></code> function):</p>
+<div class="cell" data-hash="../_cache/whole-game/mae_b8c7b00b3c096f1627a87a5b9c93bf69">
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">reg_metrics</span> <span class="op">&lt;-</span> <span class="fu">metric_set</span><span class="op">(</span><span class="va">mae</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We’ll show you how to use <code>reg_metrics</code> in a bit.</p>
+<section id="linear-regression" class="level3 unnumbered"><h3 class="unnumbered anchored" data-anchor-id="linear-regression">Linear Regression</h3>
+<p>The linear regression model is fairly simple to define and fit. Before we get to that, we must introduce a major tidymodels component: <strong>the recipe</strong>.</p>
+<p>A recipe is a set of instructions defining a potential series of computations on the predictor variables to put them into a format the model (or data set) requires. For example, the day-of-the-week factor must be converted into a numeric format. We’ll use the standard “Dummy variable” approach to do that. Additionally, our exploratory data analysis discovered that:</p>
+<ul>
+<li>There is a nonlinear relationship between the outcome and the time of the order.</li>
+<li>This nonlinear relationship is different for different days. This is an interaction effect between a qualitative predictor (<code>day</code>) and a nonlinear function of another (<code>hour</code>).</li>
+<li>There also appeared to be an additional nonlinear effect for the order distance.</li>
+</ul>
+<p>We can initialize a recipe using a simple formula method:</p>
+<div class="cell" data-hash="../_cache/whole-game/recipe-start_82b7e6a39927ac50765492ec484e7180">
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">spline_rec</span> <span class="op">&lt;-</span> <span class="fu">recipe</span><span class="op">(</span><span class="va">time_to_delivery</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">delivery_train</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>There are a few things that this function call does:</p>
+<ul>
+<li>The formula declares that the column <code>time_to_delivery</code> is the outcome (since it is on the left-hand side of the tilde). The dot on the right-hand side indicates that all of the columns in <code>delivery_train</code>, besides the outcome, should be treated as predictors.</li>
+<li>The recipe collects information on each column’s <em>type</em>. For example, it understands that <code>day</code> is a factor and that the <code>item_*</code> columns are numeric.</li>
+</ul>
+<p>Let’s add to the recipe by converting <code>day</code> to indicator columns. We do this by adding a step to the recipe via:</p>
+<div class="cell" data-hash="../_cache/whole-game/recipe-dummy_06880d307056684c0dd9a400d49f9197">
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">spline_rec</span> <span class="op">&lt;-</span> </span>
+<span>  <span class="fu">recipe</span><span class="op">(</span><span class="va">time_to_delivery</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">delivery_train</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">step_dummy</span><span class="op">(</span><span class="fu">all_factor_predictors</span><span class="op">(</span><span class="op">)</span><span class="op">)</span> </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The first argument to step functions is the variables that should be affected by the function. We can use any <span class="pkg"><a href="https://cran.r-project.org/package=dplyr">dplyr</a></span> <a href="https://dplyr.tidyverse.org/reference/select.html">selector</a> such as <code>everything()</code> and/or the bare column names. Here, we want to change every factor column that was the role of “predictor”. For this purpose, recipes have an <a href="https://recipes.tidymodels.org/reference/selections.html">extended set of selector functions</a>.</p>
+<p>Once the recipe is processed, this step will record which columns were captured by <code>all_factor_predictors()</code>, retain their factor levels, then convert them to a set of 0/1 indicators for each predictor/level.</p>
+<p>Unlike base R’s formula method, the resulting columns are named rationally. By default, it uses the pattern <code>{column name}_{level}</code> for the new features. So, the column <code>day</code> will not exist after this step. It is replaced with columns such as <code>day_Thursday</code> and so on.</p>
+<p>The next recipe step is probably unnecessary for this data set but automatically using it is not problematic. What happens if there is a factor level that occurs very infrequently? It is possible that this will only be observed in the validation or test set. <code>step_dummy()</code> will make a column for that factor level since it knows it exists but the training set will have all zeros for this column; it has zero variance. We can screen these out using <code>step_zv()</code> (‘zv’ = zero-variance):</p>
+<div class="cell" data-hash="../_cache/whole-game/recipe-zv_ba5a0226836e5d503010bfc050801aeb">
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">spline_rec</span> <span class="op">&lt;-</span> </span>
+<span>  <span class="fu">recipe</span><span class="op">(</span><span class="va">time_to_delivery</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">delivery_train</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">step_dummy</span><span class="op">(</span><span class="fu">all_factor_predictors</span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">step_zv</span><span class="op">(</span><span class="fu">all_predictors</span><span class="op">(</span><span class="op">)</span><span class="op">)</span> </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Now, we can address the nonlinear effects. We’ll use a spline basis expansion (described later on the main page) that creates additional columns from some numeric predictor. We’ll use a <em>natural spline</em> function and create ten new columns for both <code>hour</code> and <code>distance</code>:</p>
+<div class="cell" data-hash="../_cache/whole-game/recipe-spline_3cae2f03527bcd1c3677c5fac7306eb9">
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">spline_rec</span> <span class="op">&lt;-</span> </span>
+<span>  <span class="fu">recipe</span><span class="op">(</span><span class="va">time_to_delivery</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">delivery_train</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">step_dummy</span><span class="op">(</span><span class="fu">all_factor_predictors</span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">step_zv</span><span class="op">(</span><span class="fu">all_predictors</span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">step_spline_natural</span><span class="op">(</span><span class="va">hour</span>, <span class="va">distance</span>, deg_free <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The naming convention for these new features are <code>hour_01</code> … <code>hour_10</code> and so on. The original <code>hour</code> column is removed (same for the <code>distance</code> column).</p>
+<p>This step allows the linear regression to have nonlinear relationships between predictors and the outcome.</p>
+<p>Finally, we can create interactions. In base R, an interaction between variables <code>a</code> and <code>b</code> is specified in the formula using <code>a:b</code>. We’ll use the same method here with <code>step_interact()</code>. The main difference is that the columns <code>day</code> and <code>hour</code> no longer exist at this point. To capture all of the interactions, we can use the <code>:</code> convention with selector functions. Using <code>starts_wth("day_")</code> will capture the existing indicator columns and, similarly, <code>starts_wth("hour_")</code> finds the appropriate spline terms. Our final recipe is then:</p>
+<div class="cell" data-hash="../_cache/whole-game/recipe-final_49bf763850c7237f6b2df54aa9332e3c">
+<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">spline_rec</span> <span class="op">&lt;-</span> </span>
+<span>  <span class="fu">recipe</span><span class="op">(</span><span class="va">time_to_delivery</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">delivery_train</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">step_dummy</span><span class="op">(</span><span class="fu">all_factor_predictors</span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">step_zv</span><span class="op">(</span><span class="fu">all_predictors</span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">step_spline_natural</span><span class="op">(</span><span class="va">hour</span>, <span class="va">distance</span>, deg_free <span class="op">=</span> <span class="fl">10</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">step_interact</span><span class="op">(</span><span class="op">~</span> <span class="fu">starts_with</span><span class="op">(</span><span class="st">"hour_"</span><span class="op">)</span><span class="op">:</span><span class="fu">starts_with</span><span class="op">(</span><span class="st">"day_"</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Learn More About Recipes
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>You can learn more about recipes later and there is material in the tidymodels book as well as <code>tidymodels.org</code>.</p>
+<ul>
+<li><a href="https://www.tmwr.org/recipes"><em>Feature Engineering with recipes</em></a></li>
+<li><a href="https://www.tmwr.org/dimensionality"><em>Dimensionality Reduction</em></a></li>
+<li><a href="https://www.tmwr.org/categorical"><em>Encoding Categorical Data</em></a></li>
+<li><a href="https://www.tidymodels.org/start/recipes/"><em>Get Started: Preprocess your data with recipes</em></a></li>
+<li><a href="https://www.tidymodels.org/learn/#category=recipes">Articles with recipes</a></li>
+<li><a href="https://www.tidymodels.org/find/recipes/">A list of recipe steps on CRAN</a></li>
+</ul>
+</div>
+</div>
+<p>To specify the linear regression model, we use one of the functions from the <span class="pkg"><a href="https://cran.r-project.org/package=parsnip">parsnip</a></span> package called… <code><a href="https://parsnip.tidymodels.org/reference/linear_reg.html">linear_reg()</a></code>. Since we are using ordinary least squares, this function defaults to <code>stats::lm().</code></p>
+<div class="cell" data-hash="../_cache/whole-game/lm_0e032c7cac18038947ef2ddb033dc223">
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># This creates a model specification: </span></span>
+<span><span class="va">lm_spec</span> <span class="op">&lt;-</span> <span class="fu">linear_reg</span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">lm_spec</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Linear Regression Model Specification (regression)
+
+Computational engine: lm </code></pre>
+</div>
+</div>
+<p>The <em>engine</em> mentioned here is the computational method to fit the model. R has many ways to do this and <code>"lm"</code> is the <em>default engine</em>.</p>
+<p>How do we combine the recipe and the model specifications? The best approach is to make a pipeline-like object called a <em>workflow</em>:</p>
+<div class="cell" data-hash="../_cache/whole-game/lm-wflow_b9b3f1998a4bbc96346f7244ef71416c">
+<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">lin_reg_wflow</span> <span class="op">&lt;-</span> </span>
+<span>  <span class="fu">workflow</span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">add_model</span><span class="op">(</span><span class="va">lm_spec</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">add_recipe</span><span class="op">(</span><span class="va">spline_rec</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We can use the <code><a href="https://generics.r-lib.org/reference/fit.html">fit()</a></code> function to fit the workflow to the training set. This executes the recipe on the data set then passes the appropriate data to <code><a href="https://rdrr.io/r/stats/lm.html">stats::lm()</a></code>:</p>
+<div class="cell" data-hash="../_cache/whole-game/lm-fit_56419463ac3148bf9c22704c1d4925ab">
+<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">lin_reg_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html">fit</a></span><span class="op">(</span><span class="va">lin_reg_wflow</span>, data <span class="op">=</span> <span class="va">delivery_train</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We can print the results out but the results are kind of long:</p>
+<details><div class="cell" data-hash="../_cache/whole-game/lm-print_66f10f39eff3b4407530725821e96921">
+<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">lin_reg_fit</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>══ Workflow [trained] ══════════════════════════════════════════════════════════
+Preprocessor: Recipe
+Model: linear_reg()
+
+── Preprocessor ────────────────────────────────────────────────────────────────
+4 Recipe Steps
+
+• step_dummy()
+• step_zv()
+• step_spline_natural()
+• step_interact()
+
+── Model ───────────────────────────────────────────────────────────────────────
+
+Call:
+stats::lm(formula = ..y ~ ., data = data)
+
+Coefficients:
+      (Intercept)            item_01            item_02            item_03  
+         13.34341            1.24441            0.64612            0.73134  
+          item_04            item_05            item_06            item_07  
+          0.28199            0.58389            0.52500            0.50626  
+          item_08            item_09            item_10            item_11  
+          0.63762            0.73682            1.53411            0.51722  
+          item_12            item_13            item_14            item_15  
+          0.59451            0.57990            0.50804            0.64319  
+          item_16            item_17            item_18            item_19  
+          0.43089            0.60891            0.40279           -0.35685  
+          item_20            item_21            item_22            item_23  
+          0.52796            0.77434            0.51055            0.68764  
+          item_24            item_25            item_26            item_27  
+          0.81262            0.47685            0.52735            0.57728  
+          day_Tue            day_Wed            day_Thu            day_Fri  
+         -1.11996           -2.84213           -3.70591           -4.31304  
+          day_Sat            day_Sun            hour_01            hour_02  
+         -4.66591           -3.09189            1.87756            2.55884  
+          hour_03            hour_04            hour_05            hour_06  
+          2.58263            3.84644            2.58256            4.02197  
+          hour_07            hour_08            hour_09            hour_10  
+          4.01117            5.90558           -0.87821           11.19051  
+      distance_01        distance_02        distance_03        distance_04  
+         -0.05229            0.57766            0.61572            0.75240  
+      distance_05        distance_06        distance_07        distance_08  
+          1.66948            1.78371            2.90392            3.31997  
+      distance_09        distance_10  hour_01_x_day_Tue  hour_01_x_day_Wed  
+        -19.38354           75.28682            1.33041            1.28752  
+hour_01_x_day_Thu  hour_01_x_day_Fri  hour_01_x_day_Sat  hour_01_x_day_Sun  
+          2.44483            1.35596            2.42534            1.50581  
+hour_02_x_day_Tue  hour_02_x_day_Wed  hour_02_x_day_Thu  hour_02_x_day_Fri  
+          0.22676            3.14412            3.99576            4.86081  
+hour_02_x_day_Sat  hour_02_x_day_Sun  hour_03_x_day_Tue  hour_03_x_day_Wed  
+          4.83795            3.70021            2.93594            6.47829  
+hour_03_x_day_Thu  hour_03_x_day_Fri  hour_03_x_day_Sat  hour_03_x_day_Sun  
+          7.45897            9.94230           10.96729            5.75491  
+hour_04_x_day_Tue  hour_04_x_day_Wed  hour_04_x_day_Thu  hour_04_x_day_Fri  
+          1.67007            6.26087            9.71827           12.15862  
+hour_04_x_day_Sat  hour_04_x_day_Sun  hour_05_x_day_Tue  hour_05_x_day_Wed  
+         13.97145            7.95022            3.99813            9.41295  
+hour_05_x_day_Thu  hour_05_x_day_Fri  hour_05_x_day_Sat  hour_05_x_day_Sun  
+         12.17476           16.54018           17.50375            9.35184  
+hour_06_x_day_Tue  hour_06_x_day_Wed  hour_06_x_day_Thu  hour_06_x_day_Fri  
+          2.52017            8.20786           11.96784           15.71497  
+hour_06_x_day_Sat  hour_06_x_day_Sun  hour_07_x_day_Tue  hour_07_x_day_Wed  
+
+...
+and 14 more lines.</code></pre>
+</div>
+</div>
+</details><p>One helpful function is <code><a href="https://generics.r-lib.org/reference/tidy.html">tidy()</a></code>. It is designed to return the object results rationally, helpfully. In our case, the <code><a href="https://generics.r-lib.org/reference/tidy.html">tidy()</a></code> method for an <code>lm</code> object gives us a nice data frame back with information on the fitted coefficients:</p>
+<div class="cell" data-hash="../_cache/whole-game/lm-tidy_2dbacd2dbbb5bc7b7d985fb15999c0b2">
+<div class="sourceCode" id="cb42"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">tidy</span><span class="op">(</span><span class="va">lin_reg_fit</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 114 × 5
+   term        estimate std.error statistic  p.value
+   &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
+ 1 (Intercept)   13.3      1.58        8.42 4.66e-17
+ 2 item_01        1.24     0.103      12.1  3.50e-33
+ 3 item_02        0.646    0.0687      9.41 6.85e-21
+ 4 item_03        0.731    0.0691     10.6  6.46e-26
+ 5 item_04        0.282    0.0626      4.50 6.78e- 6
+ 6 item_05        0.584    0.0787      7.42 1.36e-13
+ 7 item_06        0.525    0.0720      7.29 3.46e-13
+ 8 item_07        0.506    0.0710      7.13 1.10e-12
+ 9 item_08        0.638    0.0672      9.49 3.42e-21
+10 item_09        0.737    0.0758      9.72 3.51e-22
+# ℹ 104 more rows</code></pre>
+</div>
+</div>
+<p>Unlike the <code><a href="https://rdrr.io/r/base/summary.html">summary()</a></code> method for <code>lm</code> objects, this object can immediately be used in plots or tables.</p>
+<p>Another valuable supporting function is <code><a href="https://generics.r-lib.org/reference/augment.html">augment()</a></code>. It can take a model object and data set and attach the prediction columns to the data frame. Essentially, this is an upgraded version of <code><a href="https://rdrr.io/r/stats/predict.html">predict()</a></code>. Let’s predict the validation set:</p>
+<div class="cell" data-hash="../_cache/whole-game/lm-augment_25630aad351a67e97ab82b0c531a74d0">
+<div class="sourceCode" id="cb44"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">lm_reg_val_pred</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://generics.r-lib.org/reference/augment.html">augment</a></span><span class="op">(</span><span class="va">lin_reg_fit</span>, new_data <span class="op">=</span> <span class="va">delivery_val</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">lm_reg_val_pred</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] "time_to_delivery" "hour"             "day"              "distance"        
+ [5] "item_01"          "item_02"          "item_03"          "item_04"         
+ [9] "item_05"          "item_06"          "item_07"          "item_08"         
+[13] "item_09"          "item_10"          "item_11"          "item_12"         
+[17] "item_13"          "item_14"          "item_15"          "item_16"         
+[21] "item_17"          "item_18"          "item_19"          "item_20"         
+[25] "item_21"          "item_22"          "item_23"          "item_24"         
+[29] "item_25"          "item_26"          "item_27"          ".pred"           </code></pre>
+</div>
+</div>
+<p>What is our MAE? This is where we use our metric set <code>reg_metrics</code>. Note that there is a column in the results called <code>.pred</code>. For regression models, this is the predicted delivery time for each order in the validation set. We can use that and the original observed outcome column to estimate the MAE<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a>:</p>
+<div class="cell" data-hash="../_cache/whole-game/lm-mae_1b52decfc3ccb30e6440ecb7ebf769e0">
+<div class="sourceCode" id="cb46"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">lm_reg_val_pred</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">reg_metrics</span><span class="op">(</span>truth <span class="op">=</span> <span class="va">time_to_delivery</span>, estimate <span class="op">=</span> <span class="va">.pred</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 3
+  .metric .estimator .estimate
+  &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;
+1 mae     standard        1.61</code></pre>
+</div>
+</div>
+<p>The units are fractional minutes.</p>
+<p>At this point, we can make diagnostic plots of our data and so on.</p>
+<p>Let’s take a minor distraction that will pay off a bit later. The main page mentions that we can treat the validation set as a single resample of the data. If we were to do that, our code wouldn’t have to change much when we get into more complex scenarios such as cross-validation or model tuning. To do this, we can convert the initial split object into a resampling set (a.k.a. an <code>rset</code>):</p>
+<div class="cell" data-hash="../_cache/whole-game/rset_495727b9a347fd97d06abeae2f65c5ed">
+<div class="sourceCode" id="cb48"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">delivery_rs</span> <span class="op">&lt;-</span> <span class="fu">validation_set</span><span class="op">(</span><span class="va">delivery_split</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/class.html">class</a></span><span class="op">(</span><span class="va">delivery_rs</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "validation_set" "rset"           "tbl_df"         "tbl"           
+[5] "data.frame"    </code></pre>
+</div>
+<div class="sourceCode" id="cb50"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">delivery_rs</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 2
+  splits              id        
+  &lt;list&gt;              &lt;chr&gt;     
+1 &lt;split [6004/2004]&gt; validation</code></pre>
+</div>
+</div>
+<p>This packages the training and validation sets together in a way that it knows when to use each data set appropriately.</p>
+<p>Since we are treating this as if it were resampling, we can use the <code>fit_resamples()</code> function to do much of the manual work we just showed. We’ll add a <em>control object</em> to the mix to specify that we want to retain the validation set predictions (and our original workflow).</p>
+<div class="cell" data-hash="../_cache/whole-game/lm-resample_459d24a1be7a42c68741c68b650ce914">
+<div class="sourceCode" id="cb52"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">ctrl_rs</span> <span class="op">&lt;-</span> <span class="fu">control_resamples</span><span class="op">(</span>save_pred <span class="op">=</span> <span class="cn">TRUE</span>, save_workflow <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="va">lin_reg_res</span> <span class="op">&lt;-</span></span>
+<span>  <span class="fu">fit_resamples</span><span class="op">(</span><span class="va">lin_reg_wflow</span>,</span>
+<span>                resamples <span class="op">=</span> <span class="va">delivery_rs</span>,</span>
+<span>                control <span class="op">=</span> <span class="va">ctrl_rs</span>,</span>
+<span>                metrics <span class="op">=</span> <span class="va">reg_metrics</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The benefit here is that there are a lot of <em>helper</em> functions to simplify your code. For example, to get the validation set MAE and predictions:</p>
+<div class="cell" data-hash="../_cache/whole-game/lm-resample-collects_39dda7b7f24f5bae98675266ff779fdc">
+<div class="sourceCode" id="cb53"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://tune.tidymodels.org/reference/collect_predictions.html">collect_metrics</a></span><span class="op">(</span><span class="va">lin_reg_res</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 6
+  .metric .estimator  mean     n std_err .config             
+  &lt;chr&gt;   &lt;chr&gt;      &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt; &lt;chr&gt;               
+1 mae     standard    1.61     1      NA Preprocessor1_Model1</code></pre>
+</div>
+<div class="sourceCode" id="cb55"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://tune.tidymodels.org/reference/collect_predictions.html">collect_predictions</a></span><span class="op">(</span><span class="va">lin_reg_res</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2,004 × 5
+   id         .pred  .row time_to_delivery .config             
+   &lt;chr&gt;      &lt;dbl&gt; &lt;int&gt;            &lt;dbl&gt; &lt;chr&gt;               
+ 1 validation  30.1  6005             27.2 Preprocessor1_Model1
+ 2 validation  23.0  6006             22.1 Preprocessor1_Model1
+ 3 validation  28.4  6007             26.6 Preprocessor1_Model1
+ 4 validation  31.0  6008             30.8 Preprocessor1_Model1
+ 5 validation  38.6  6009             41.2 Preprocessor1_Model1
+ 6 validation  27.0  6010             27.0 Preprocessor1_Model1
+ 7 validation  21.6  6011             20.8 Preprocessor1_Model1
+ 8 validation  18.7  6012             17.0 Preprocessor1_Model1
+ 9 validation  26.3  6013             25.7 Preprocessor1_Model1
+10 validation  19.9  6014             19.5 Preprocessor1_Model1
+# ℹ 1,994 more rows</code></pre>
+</div>
+</div>
+<p>The <span class="pkg"><a href="https://cran.r-project.org/package=probably">probably</a></span> package also has a nice helper to check the calibration of the model via a plot:</p>
+<div class="cell" data-hash="../_cache/whole-game/lm-cal-plot_3f49ae9801c159a6b2980ee3d8655d62">
+<div class="sourceCode" id="cb57"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://probably.tidymodels.org/reference/cal_plot_regression.html">cal_plot_regression</a></span><span class="op">(</span><span class="va">lin_reg_res</span>, alpha <span class="op">=</span> <span class="fl">1</span> <span class="op">/</span> <span class="fl">3</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="whole-game_files/figure-html/lm-cal-plot-1.png" class="img-fluid" style="width:50.0%"></p>
+</div>
+</div>
+</section><section id="rule-based-ensemble" class="level3 unnumbered"><h3 class="unnumbered anchored" data-anchor-id="rule-based-ensemble">Rule-Based Ensemble</h3>
+<p>To fit the Cubist model, we need to load one of the tidymodels <em>extension packages</em> called <span class="pkg"><a href="https://cran.r-project.org/package=rules">rules</a></span>. It has the tools to fit this model and will automatically (and silently) use the <span class="pkg"><a href="https://cran.r-project.org/package=Cubist">Cubist</a></span> package when the model fit occurs.</p>
+<p>We’ll create a model specification that has an enselmble size of 100:</p>
+<div class="cell" data-hash="../_cache/whole-game/rules_9ebbcc07c3c39ca01707614c5ad25ba4">
+<div class="sourceCode" id="cb58"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/tidymodels/rules">rules</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># A model specification: </span></span>
+<span><span class="va">cb_spec</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://parsnip.tidymodels.org/reference/cubist_rules.html">cubist_rules</a></span><span class="op">(</span>committees <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>One advantage of rule-based models is that very little preprocessing is required (i.e., no dummy variables or spline terms). For that reason, we’ll use a simple R formula instead of a recipe:</p>
+<div class="cell" data-hash="../_cache/whole-game/rules-wflow_16cf48b4dbbc12991994c88438e70cbe">
+<div class="sourceCode" id="cb59"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">cb_wflow</span> <span class="op">&lt;-</span> </span>
+<span>  <span class="fu">workflow</span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">add_model</span><span class="op">(</span><span class="va">cb_spec</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">add_formula</span><span class="op">(</span><span class="va">time_to_delivery</span> <span class="op">~</span> <span class="va">.</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Let’s go straight to <code>fit_resamples()</code>:</p>
+<div class="cell" data-hash="../_cache/whole-game/rules-resample-fit_837f2872f4be5bbb5b54f149331bc558">
+<div class="sourceCode" id="cb60"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">cb_res</span> <span class="op">&lt;-</span></span>
+<span>  <span class="fu">fit_resamples</span><span class="op">(</span></span>
+<span>    <span class="va">cb_wflow</span>, </span>
+<span>    resamples <span class="op">=</span> <span class="va">delivery_rs</span>, </span>
+<span>    control <span class="op">=</span> <span class="va">ctrl_rs</span>, </span>
+<span>    metrics <span class="op">=</span> <span class="va">reg_metrics</span></span>
+<span>  <span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://tune.tidymodels.org/reference/collect_predictions.html">collect_metrics</a></span><span class="op">(</span><span class="va">cb_res</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 6
+  .metric .estimator  mean     n std_err .config             
+  &lt;chr&gt;   &lt;chr&gt;      &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt; &lt;chr&gt;               
+1 mae     standard    1.42     1      NA Preprocessor1_Model1</code></pre>
+</div>
+</div>
+<p>The calibration plot:</p>
+<div class="cell" data-hash="../_cache/whole-game/cb-cal-plot_5ee49d715f6c5179dd57fc21d0ad634a">
+<div class="sourceCode" id="cb62"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://probably.tidymodels.org/reference/cal_plot_regression.html">cal_plot_regression</a></span><span class="op">(</span><span class="va">cb_res</span>, alpha <span class="op">=</span> <span class="fl">1</span> <span class="op">/</span> <span class="fl">3</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="whole-game_files/figure-html/cb-cal-plot-1.png" class="img-fluid" style="width:50.0%"></p>
+</div>
+</div>
+<p>This is pretty simple and demonstrates that, after an initial investment in learning tidymodels syntax, the process of fitting different models does not require huge changes to your scripts.</p>
+<p>To get the model fit, we previously used <code><a href="https://generics.r-lib.org/reference/fit.html">fit()</a></code>. With resampling objects (and the tuning objects that we are about to see), there is another helper function called <code>fit_best()</code> that will create the model from the entire training set using the resampling results<a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a>:</p>
+<div class="cell" data-hash="../_cache/whole-game/cb-fit_d91e693e57b282c2c135e8ddc75f3496">
+<div class="sourceCode" id="cb63"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">cb_fit</span> <span class="op">&lt;-</span> <span class="fu">fit_best</span><span class="op">(</span><span class="va">cb_res</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">cb_fit</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>══ Workflow [trained] ══════════════════════════════════════════════════════════
+Preprocessor: Formula
+Model: cubist_rules()
+
+── Preprocessor ────────────────────────────────────────────────────────────────
+time_to_delivery ~ .
+
+── Model ───────────────────────────────────────────────────────────────────────
+
+Call:
+cubist.default(x = x, y = y, committees = 100)
+
+Number of samples: 6004 
+Number of predictors: 30 
+
+Number of committees: 100 
+Number of rules per committee: 31, 22, 23, 26, 21, 24, 23, 23, 22, 23, 21, 22, 18, 24, 20, 22, 16, 26, 25, 26 ... </code></pre>
+</div>
+</div>
+<p>The <code><a href="https://generics.r-lib.org/reference/tidy.html">tidy()</a></code> method is also helpful here. It contains all of the rules and corresponding regression models. Let’s get these values for the second rule in the fourth ensemble:</p>
+<div class="cell" data-hash="../_cache/whole-game/cb-tidy_83841212ac2f65ae11fd0fd3330454e1">
+<div class="sourceCode" id="cb65"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">rule_details</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://generics.r-lib.org/reference/tidy.html">tidy</a></span><span class="op">(</span><span class="va">cb_fit</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">rule_details</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span><span class="op">(</span><span class="va">committee</span> <span class="op">==</span> <span class="fl">4</span> <span class="op">&amp;</span> <span class="va">rule_num</span> <span class="op">==</span> <span class="fl">2</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">pluck</span><span class="op">(</span><span class="st">"rule"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "( hour &lt;= 14.946 ) &amp; ( day  %in% c( 'Mon','Tue','Wed','Thu','Sun' ) ) &amp; ( distance &lt;= 4.52 )"</code></pre>
+</div>
+<div class="sourceCode" id="cb67"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">rule_details</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span><span class="op">(</span><span class="va">committee</span> <span class="op">==</span> <span class="fl">4</span> <span class="op">&amp;</span> <span class="va">rule_num</span> <span class="op">==</span> <span class="fl">2</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">select</span><span class="op">(</span><span class="va">estimate</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">pluck</span><span class="op">(</span><span class="fl">1</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">pluck</span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 15 × 2
+   term        estimate
+   &lt;chr&gt;          &lt;dbl&gt;
+ 1 (Intercept)   -11.2 
+ 2 hour            2.05
+ 3 distance        0.78
+ 4 item_01        -0.5 
+ 5 item_02         0.3 
+ 6 item_05         0.8 
+ 7 item_06         0.6 
+ 8 item_07         0.4 
+ 9 item_09         0.5 
+10 item_11         0.5 
+11 item_17         0.3 
+12 item_20         0.7 
+13 item_22         0.3 
+14 item_24         0.7 
+15 item_25         0.5 </code></pre>
+</div>
+</div>
+</section><section id="neural-network" class="level3 unnumbered"><h3 class="unnumbered anchored" data-anchor-id="neural-network">Neural Network</h3>
+<p>The model function for this type of model is <code><a href="https://parsnip.tidymodels.org/reference/mlp.html">parsnip::mlp()</a></code> (MLP is short for “multi-layer perceptron”). There are quite a few packages for neural networks in R. tidymodels has interfaces to several engines:</p>
+<div class="cell" data-hash="../_cache/whole-game/mlp-engines_8b338975d1f4fd9b8a042cd79eccf93d">
+<div class="sourceCode" id="cb69"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://parsnip.tidymodels.org/reference/show_engines.html">show_engines</a></span><span class="op">(</span><span class="st">"mlp"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 2
+  engine mode          
+  &lt;chr&gt;  &lt;chr&gt;         
+1 keras  classification
+2 keras  regression    
+3 nnet   classification
+4 nnet   regression    
+5 brulee classification
+6 brulee regression    </code></pre>
+</div>
+</div>
+<p>We’ll use the <span class="pkg"><a href="https://cran.r-project.org/package=brulee">brulee</a></span> package. This uses the <code>torch</code> software to fit the model. We’ll only tune the number of hidden units (for now, see later chapters). To mark <em>any</em> parameter for tuning, we pass the <code><a href="https://hardhat.tidymodels.org/reference/tune.html">tune()</a></code> function to an argument:</p>
+<div class="cell" data-hash="../_cache/whole-game/mlp-spec_21482e5c37537ae6dde6dc6d00f1df2d">
+<div class="sourceCode" id="cb71"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">nnet_spec</span> <span class="op">&lt;-</span> </span>
+<span>  <span class="fu"><a href="https://parsnip.tidymodels.org/reference/mlp.html">mlp</a></span><span class="op">(</span></span>
+<span>    hidden_units <span class="op">=</span> <span class="fu"><a href="https://hardhat.tidymodels.org/reference/tune.html">tune</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>    <span class="co"># Some specific argument values that we chose:</span></span>
+<span>    penalty <span class="op">=</span> <span class="fl">0.01</span>,</span>
+<span>    learn_rate <span class="op">=</span> <span class="fl">0.1</span>,</span>
+<span>    epochs <span class="op">=</span> <span class="fl">5000</span></span>
+<span>  <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://parsnip.tidymodels.org/reference/set_args.html">set_mode</a></span><span class="op">(</span><span class="st">"regression"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://parsnip.tidymodels.org/reference/set_engine.html">set_engine</a></span><span class="op">(</span><span class="st">"brulee"</span>, stop_iter <span class="op">=</span> <span class="fl">10</span>, rate_schedule <span class="op">=</span> <span class="st">"cyclic"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>A few notes on this:</p>
+<ul>
+<li>The arguments to <code><a href="https://parsnip.tidymodels.org/reference/mlp.html">mlp()</a></code> are called the <em>main arguments</em> since they are used by several engines.</li>
+<li>The default engine uses the <span class="pkg"><a href="https://cran.r-project.org/package=nnet">nnet</a></span> package; <code><a href="https://parsnip.tidymodels.org/reference/set_engine.html">set_engine()</a></code> specifies that we want to use the <span class="pkg"><a href="https://cran.r-project.org/package=brulee">brulee</a></span> package instead.</li>
+<li>Two arguments (<code>stop_iter</code> and <code>rate_schedule</code>) are specific to our engine. We set them here (and can also pass a <code><a href="https://hardhat.tidymodels.org/reference/tune.html">tune()</a></code> value to them).</li>
+<li>Neural networks can fit both classification and regression models. We must state what model type (called a “mode”) to create.</li>
+</ul>
+<p>This model requires the conversion to dummy variables but does not require features to handle nonlinear trends and interactions. One additional preprocessing step that is required is to put the predictors in the same units (e.g., not miles or hours). There are a few ways to do this. We will center and scale the predictors using <code><a href="https://recipes.tidymodels.org/reference/step_normalize.html">recipes::step_normalize()</a></code>:</p>
+<div class="cell" data-hash="../_cache/whole-game/mlp-rec_7aeab9102b67f48dbf036e263e528c0a">
+<div class="sourceCode" id="cb72"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">norm_rec</span> <span class="op">&lt;-</span> </span>
+<span>  <span class="fu">recipe</span><span class="op">(</span><span class="va">time_to_delivery</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">delivery_train</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">step_dummy</span><span class="op">(</span><span class="fu">all_factor_predictors</span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">step_zv</span><span class="op">(</span><span class="fu">all_predictors</span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">step_normalize</span><span class="op">(</span><span class="fu">all_numeric_predictors</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">nnet_wflow</span> <span class="op">&lt;-</span> </span>
+<span>  <span class="fu">workflow</span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">add_model</span><span class="op">(</span><span class="va">nnet_spec</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">add_recipe</span><span class="op">(</span><span class="va">norm_rec</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Unlike the previous models, we are tuning one of the hyper-parameters. Instead of <code>fit_resamples()</code>, we’ll use <code>tune_grid()</code> to search over a predefined set of values for the number of hidden units. We can set <em>how many</em> values we should try or directly declare the candidate values. We’ll do the latter and, for simplicity, use a smaller range of values.</p>
+<p>Finally, we’ll use another control function:</p>
+<div class="cell" data-hash="../_cache/whole-game/mlp-tune_795edcd15df76f506e4b214cd5141025">
+<div class="sourceCode" id="cb73"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># The main materials used 2:100</span></span>
+<span><span class="va">nnet_grid</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="op">(</span>hidden_units <span class="op">=</span> <span class="fl">2</span><span class="op">:</span><span class="fl">10</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">ctrl_grid</span> <span class="op">&lt;-</span> <span class="fu">control_grid</span><span class="op">(</span>save_pred <span class="op">=</span> <span class="cn">TRUE</span>, save_workflow <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># The model initializes the parameters with random numbers so set the seed:</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">388</span><span class="op">)</span></span>
+<span><span class="va">nnet_res</span> <span class="op">&lt;-</span></span>
+<span>  <span class="fu">tune_grid</span><span class="op">(</span><span class="va">nnet_wflow</span>,</span>
+<span>            resamples <span class="op">=</span> <span class="va">delivery_rs</span>,</span>
+<span>            control <span class="op">=</span> <span class="va">ctrl_grid</span>,</span>
+<span>            grid <span class="op">=</span> <span class="va">nnet_grid</span>,</span>
+<span>            metrics <span class="op">=</span> <span class="va">reg_metrics</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>There are some additional helper functions for model tuning. For example, we can rank the models based on a metric:</p>
+<div class="cell" data-hash="../_cache/whole-game/mlp-show_0c77f333acc52731f66c617b19169266">
+<div class="sourceCode" id="cb74"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">show_best</span><span class="op">(</span><span class="va">nnet_res</span>, metric <span class="op">=</span> <span class="st">"mae"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 5 × 7
+  hidden_units .metric .estimator  mean     n std_err .config             
+         &lt;int&gt; &lt;chr&gt;   &lt;chr&gt;      &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt; &lt;chr&gt;               
+1            8 mae     standard    1.51     1      NA Preprocessor1_Model7
+2           10 mae     standard    1.52     1      NA Preprocessor1_Model9
+3            6 mae     standard    1.58     1      NA Preprocessor1_Model5
+4            9 mae     standard    1.59     1      NA Preprocessor1_Model8
+5            5 mae     standard    1.60     1      NA Preprocessor1_Model4</code></pre>
+</div>
+</div>
+<p>We can also return the parameter with the numerically best results<a href="#fn8" class="footnote-ref" id="fnref8" role="doc-noteref"><sup>8</sup></a>:</p>
+<div class="cell" data-hash="../_cache/whole-game/mlp-select_e95570ab1c9bf00bbfac2b25ac98b53c">
+<div class="sourceCode" id="cb76"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">best_hidden_units</span> <span class="op">&lt;-</span> <span class="fu">select_best</span><span class="op">(</span><span class="va">nnet_res</span>, metric <span class="op">=</span> <span class="st">"mae"</span><span class="op">)</span></span>
+<span><span class="va">best_hidden_units</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 2
+  hidden_units .config             
+         &lt;int&gt; &lt;chr&gt;               
+1            8 Preprocessor1_Model7</code></pre>
+</div>
+</div>
+<p>The <code><a href="https://ggplot2.tidyverse.org/reference/autoplot.html">autoplot()</a></code> method can visualize the relationship between the tuning parameter(s) and the performance metric(s).</p>
+<div class="cell" data-hash="../_cache/whole-game/nnet-autoplot_e9e9f8297dde4e9d56489983d9679cb2">
+<div class="sourceCode" id="cb78"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html">autoplot</a></span><span class="op">(</span><span class="va">nnet_res</span>, metric <span class="op">=</span> <span class="st">"mae"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="whole-game_files/figure-html/nnet-autoplot-1.png" class="img-fluid" style="width:70.0%"></p>
+</div>
+</div>
+<p><code><a href="https://tune.tidymodels.org/reference/collect_predictions.html">tune::collect_predictions()</a></code> will automatically return the out-of-sample predictions for every candidate model (e.g., every tuning parameter value.). We might not want them all; it has an argument called <code>parameters</code> that can be used to filter the results.</p>
+<p><code><a href="https://probably.tidymodels.org/reference/cal_plot_regression.html">probably::cal_plot_regression()</a></code> automatically shows the results for each tuning parameter combination. For example:</p>
+<div class="cell" data-hash="../_cache/whole-game/nnet-cal-plot_3ed8a91f536ff22083954371031c43a9">
+<div class="sourceCode" id="cb79"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://probably.tidymodels.org/reference/cal_plot_regression.html">cal_plot_regression</a></span><span class="op">(</span><span class="va">nnet_res</span>, alpha <span class="op">=</span> <span class="fl">1</span> <span class="op">/</span> <span class="fl">3</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="whole-game_files/figure-html/nnet-cal-plot-1.png" class="img-fluid" style="width:50.0%"></p>
+</div>
+</div>
+<p>There are two options if we need a model fit on the training set. If the numerically best parameter is best (i.e., smallest MAE), then <code><a href="https://tune.tidymodels.org/reference/fit_best.html">tune::fit_best()</a></code> is the easiest approach. Alternatively, you can choose the exact tuning parameter values you desire and <em>splice</em> them into the model to replace the current values of <code><a href="https://hardhat.tidymodels.org/reference/tune.html">tune()</a></code>. To do this, there is a <code>finalize_workflow()</code> function. It takes a data frame with one row and columns for each tuning parameter. Here’s an example where we decide that 10 hidden units are best:</p>
+<div class="cell" data-hash="../_cache/whole-game/nnet-final-fit_984c0149c1a18b05165085a604a1b82a">
+<div class="sourceCode" id="cb80"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">814</span><span class="op">)</span></span>
+<span><span class="va">nnet_fit</span> <span class="op">&lt;-</span> </span>
+<span>  <span class="va">nnet_wflow</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">finalize_workflow</span><span class="op">(</span><span class="fu">tibble</span><span class="op">(</span>hidden_units <span class="op">=</span> <span class="fl">10</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html">fit</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">delivery_train</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section></section><section id="aside-parallel-processing" class="level2" data-number="2.6"><h2 data-number="2.6" class="anchored" data-anchor-id="aside-parallel-processing">
+<span class="header-section-number">2.6</span> Aside: Parallel Processing</h2>
+<p>For model tuning, we are fitting many models. With grid search, these models are not dependent on one another. For this reason, it is possible to compute these model fits simultaneously (i.e., in parallel).</p>
+<p>To do so, tidymodels requires you to specify a <em>parallel backend</em>. There are several types, and we will use PSOCK clusters since they work on all operating systems. For this technology, we can run the following commands before running <code>fit_resamples()</code> or any of the <code>tune_*()</code> functions:</p>
+<div class="cell" data-hash="../_cache/whole-game/parallel-start_789b667c73f75d9bcc8f653ae81de336">
+<div class="sourceCode" id="cb81"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">cores</span> <span class="op">&lt;-</span> <span class="fu">parallel</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/parallel/detectCores.html">detectCores</a></span><span class="op">(</span>logical <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/RevolutionAnalytics/doparallel">doParallel</a></span><span class="op">)</span></span>
+<span><span class="va">cl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/parallel/makeCluster.html">makePSOCKcluster</a></span><span class="op">(</span><span class="va">cores</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/doParallel/man/registerDoParallel.html">registerDoParallel</a></span><span class="op">(</span><span class="va">cl</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>After we are finished, we also close down the cluster:</p>
+<div class="cell" data-hash="../_cache/whole-game/parallel-stop_9de3f5f3bc67ab91fbe98abde038377f">
+<div class="sourceCode" id="cb82"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">parallel</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/parallel/makeCluster.html">stopCluster</a></span><span class="op">(</span><span class="va">cl</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>There can be significant speed-ups when running in parallel. See the <a href="https://www.tmwr.org/grid-search#parallel-processing">section in the tidymodels book</a> for more details.</p>
+</section><section id="calibration" class="level2" data-number="2.7"><h2 data-number="2.7" class="anchored" data-anchor-id="calibration">
+<span class="header-section-number">2.7</span> Calibration</h2>
+<p>The functions to calibrate predictions are in the <span class="pkg"><a href="https://cran.r-project.org/package=probably">probably</a></span> package and have names that start with <code>cal_*</code>. There are methods that work on the results from <code>fit_resamples()</code> or the <code>tune_*()</code> functions, but you can also just use a data frame of predicted values.</p>
+<p>We must estimate the trend with the validation set. If we use our object <code>lin_reg_res</code>, it knows what data to use:</p>
+<div class="cell" data-hash="../_cache/whole-game/cal-linear-est_f46ccd31f47be3a1aca979a75a3fe1de">
+<div class="sourceCode" id="cb83"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">lin_reg_cal</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://probably.tidymodels.org/reference/cal_estimate_linear.html">cal_estimate_linear</a></span><span class="op">(</span><span class="va">lin_reg_res</span><span class="op">)</span></span>
+<span><span class="va">lin_reg_cal</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code></code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>── Regression Calibration </code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Method: Generalized additive model</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Source class: Tune Results</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Data points: 2,004</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Truth variable: `time_to_delivery`</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Estimate variable: `.pred`</code></pre>
+</div>
+</div>
+<p>As you’ll see in a minute, the function <code><a href="https://probably.tidymodels.org/reference/cal_apply.html">probably::cal_apply()</a></code> calibrates new predictions.</p>
+</section><section id="test-set-results" class="level2" data-number="2.8"><h2 data-number="2.8" class="anchored" data-anchor-id="test-set-results">
+<span class="header-section-number">2.8</span> Test Set Results</h2>
+<p>As with <code>best_fit()</code>, there are two ways to predict the test set.</p>
+<p>The more manual approach is to fit the model on the training set, use <code><a href="https://rdrr.io/r/stats/predict.html">predict()</a></code> or <code><a href="https://generics.r-lib.org/reference/augment.html">augment()</a></code> to compute the test set predictions, calibrate them with our object, then use our metric to compute performance. If we had not already fit the model, the pre-calibration code is:</p>
+<div class="cell" data-hash="../_cache/whole-game/lm-test-final-uncal_b400a4a094b9fb62fce25a832c77067a">
+<div class="sourceCode" id="cb91"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">lin_reg_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html">fit</a></span><span class="op">(</span><span class="va">lin_reg_wflow</span>, <span class="va">delivery_train</span><span class="op">)</span></span>
+<span><span class="va">lin_reg_test_pred</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://generics.r-lib.org/reference/augment.html">augment</a></span><span class="op">(</span><span class="va">lin_reg_fit</span>, <span class="va">delivery_test</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">lin_reg_test_pred</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">reg_metrics</span><span class="op">(</span><span class="va">time_to_delivery</span>, <span class="va">.pred</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 3
+  .metric .estimator .estimate
+  &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;
+1 mae     standard        1.61</code></pre>
+</div>
+<div class="sourceCode" id="cb93"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># plot the uncalibrated results: </span></span>
+<span><span class="va">lin_reg_test_pred</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://probably.tidymodels.org/reference/cal_plot_regression.html">cal_plot_regression</a></span><span class="op">(</span>truth <span class="op">=</span> <span class="va">time_to_delivery</span>, estimate <span class="op">=</span> <span class="va">.pred</span>, alpha <span class="op">=</span> <span class="fl">1</span> <span class="op">/</span> <span class="fl">3</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="whole-game_files/figure-html/lm-test-final-uncal-1.png" class="img-fluid" style="width:50.0%"></p>
+</div>
+</div>
+<p>There is a shortcut for the first three commands. <code><a href="https://tune.tidymodels.org/reference/last_fit.html">tune::last_fit()</a></code> takes our initial split object and automatically does the rest (but not calibration yet):</p>
+<div class="cell" data-hash="../_cache/whole-game/last-fit_db0c61694430b853a19846724f3d4118">
+<div class="sourceCode" id="cb94"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">lin_reg_test_res</span> <span class="op">&lt;-</span> </span>
+<span>  <span class="va">lin_reg_wflow</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">last_fit</span><span class="op">(</span><span class="va">delivery_split</span>, metrics <span class="op">=</span> <span class="va">reg_metrics</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We can pull out the elements we need from this object using some <code>extract_*()</code> and <code>collect_*()</code> functions. Here are a few:</p>
+<div class="cell" data-hash="../_cache/whole-game/last-fit-stuff_28ccae5f28efe3b3793f5dd8cb6426a9">
+<div class="sourceCode" id="cb95"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Test set metrics:</span></span>
+<span><span class="fu"><a href="https://tune.tidymodels.org/reference/collect_predictions.html">collect_metrics</a></span><span class="op">(</span><span class="va">lin_reg_test_res</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 4
+  .metric .estimator .estimate .config             
+  &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt; &lt;chr&gt;               
+1 mae     standard        1.61 Preprocessor1_Model1</code></pre>
+</div>
+<div class="sourceCode" id="cb97"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Test set predictions: </span></span>
+<span><span class="fu"><a href="https://tune.tidymodels.org/reference/collect_predictions.html">collect_predictions</a></span><span class="op">(</span><span class="va">lin_reg_test_res</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2,004 × 5
+   id               .pred  .row time_to_delivery .config             
+   &lt;chr&gt;            &lt;dbl&gt; &lt;int&gt;            &lt;dbl&gt; &lt;chr&gt;               
+ 1 train/test split  16.0     7             18.0 Preprocessor1_Model1
+ 2 train/test split  16.0    14             17.6 Preprocessor1_Model1
+ 3 train/test split  27.6    16             26.7 Preprocessor1_Model1
+ 4 train/test split  17.2    29             17.6 Preprocessor1_Model1
+ 5 train/test split  32.2    33             32.2 Preprocessor1_Model1
+ 6 train/test split  20.2    34             20.3 Preprocessor1_Model1
+ 7 train/test split  29.2    35             30.5 Preprocessor1_Model1
+ 8 train/test split  18.8    43             20.6 Preprocessor1_Model1
+ 9 train/test split  25.5    44             24.9 Preprocessor1_Model1
+10 train/test split  22.6    49             22.3 Preprocessor1_Model1
+# ℹ 1,994 more rows</code></pre>
+</div>
+<div class="sourceCode" id="cb99"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Final model fit: </span></span>
+<span><span class="va">lin_reg_fit</span> <span class="op">&lt;-</span> <span class="fu">extract_fit_parsnip</span><span class="op">(</span><span class="va">lin_reg_test_res</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># cal_plot_regression(lin_reg_test_res)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Now let’s calibrate and compute performance:</p>
+<div class="cell" data-hash="../_cache/whole-game/lm-test-final-cal_eb878c1ec3b1d505bed63639d5ff481f">
+<div class="sourceCode" id="cb100"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># apply calibration</span></span>
+<span><span class="va">lin_reg_test_pred_cal</span> <span class="op">&lt;-</span> </span>
+<span>  <span class="va">lin_reg_test_pred</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://probably.tidymodels.org/reference/cal_apply.html">cal_apply</a></span><span class="op">(</span><span class="va">lin_reg_cal</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">lin_reg_test_pred_cal</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">reg_metrics</span><span class="op">(</span><span class="va">time_to_delivery</span>, <span class="va">.pred</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 3
+  .metric .estimator .estimate
+  &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;
+1 mae     standard        1.54</code></pre>
+</div>
+<div class="sourceCode" id="cb102"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># plot the calibrated results: </span></span>
+<span><span class="va">lin_reg_test_pred_cal</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://probably.tidymodels.org/reference/cal_plot_regression.html">cal_plot_regression</a></span><span class="op">(</span>truth <span class="op">=</span> <span class="va">time_to_delivery</span>, estimate <span class="op">=</span> <span class="va">.pred</span>, alpha <span class="op">=</span> <span class="fl">1</span> <span class="op">/</span> <span class="fl">3</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="whole-game_files/figure-html/lm-test-final-cal-1.png" class="img-fluid" style="width:50.0%"></p>
+</div>
+</div>
+</section><section id="conclusion" class="level2" data-number="2.9"><h2 data-number="2.9" class="anchored" data-anchor-id="conclusion">
+<span class="header-section-number">2.9</span> Conclusion</h2>
+<p>This has been an abbreviated, high-level introduction to using tidymodels. Future chapters will go into much more detail on these subjects and illustrate additional features and functions as needed.</p>
+
+
+</section><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><hr>
+<ol>
+<li id="fn1"><p>We use a different ggplot theme for the main materials. We’ll use the default theme here.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>If you are wondering how we get the seed values, I use <code>sample.int(1000, 1)</code> to generate random seeds on the fly.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>Why are we doing this again? Didn’t we already “jump in the river?” Yes. If we were executing all of the code here in the exact order (with no typos or commands in between), we would have reproducible pseudo-random numbers. That’s usually not how interactive data analysis goes, though. Therefore, we (re)set the seed each time we use randomness.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4"><p>This <code>map()</code> call can be made much faster by using the <span class="pkg"><a href="https://cran.r-project.org/package=furrr">furrr</a></span> package. It has versions of the <code><a href="https://purrr.tidyverse.org/reference/map.html">purrr::map()</a></code> functions that can run in parallel.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn5"><p>You can see another example of bootstrap intervals at <a href="https://www.tidymodels.org/learn/statistics/bootstrap/">tidymodels.org</a>.<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn6"><p>We could have used the <code><a href="https://yardstick.tidymodels.org/reference/mae.html">yardstick::mae()</a></code> directly instead of stuffing that function in a metric set. Since we often want to collect more than one type of performance statistic, we’re showing how to use a metric set.<a href="#fnref6" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn7"><p>This is possible since we previously used the <code>save_workflow = TRUE</code> option in the control function.<a href="#fnref7" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn8"><p>As impressive as the <code>torch</code> ecosystem is, it is not as optimized for reproducibility. These results may vary from run to run due to the inability to fix some of the random numbers used and their use of different numerical tolerances across operating systems.<a href="#fnref8" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol></section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script><nav class="page-navigation"><div class="nav-page nav-page-previous">
+      <a href="../chapters/introduction.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../chapters/initial-data-splitting.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Initial Data Splitting</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+</body></html>
